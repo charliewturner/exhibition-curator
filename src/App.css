@@ -58,7 +58,7 @@
 #homepage-container {
   display: flex;
   flex-direction: column;
-  width: 100v2;
+  width: 100vw;
   height: 100vh;
 }
 
@@ -72,6 +72,17 @@
 
 #header-container > * {
   height: 90%;
+  justify-content: center;
+  align-items: center;
+}
+
+#search-input {
+  display: flex;
+  flex-grow: 1;
+}
+
+#profile-dropdown {
+  margin-left: 200px;
 }
 
 #homepage-body {
@@ -89,4 +100,8 @@
   position: absolute;
   top: 0;
   right: 0;
+}
+
+#focus-info {
+  height: 200px;
 }

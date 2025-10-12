@@ -1,7 +1,7 @@
 function ProfileDropdown(): React.JSX.Element {
   return (
     <>
-      <div>ProfileDropdown</div>
+      <div id="profile-dropdown">ProfileDropdown</div>
     </>
   );
 }

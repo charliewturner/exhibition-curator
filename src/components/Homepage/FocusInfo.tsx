@@ -1,7 +1,7 @@
 function FocusInfo(): React.JSX.Element {
   return (
     <>
-      <div>FocusInfo</div>
+      <div id="focus-info">FocusInfo</div>
     </>
   );
 }

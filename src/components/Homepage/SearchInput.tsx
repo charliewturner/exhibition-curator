@@ -1,7 +1,7 @@
 function SearchInput(): React.JSX.Element {
   return (
     <>
-      <div>SearchInput</div>
+      <div id="search-input">SearchInput</div>
     </>
   );
 }

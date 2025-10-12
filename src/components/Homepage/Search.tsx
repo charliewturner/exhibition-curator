@@ -10,7 +10,6 @@ function Search(): React.JSX.Element {
       <Sort></Sort>
       <SearchInput></SearchInput>
       <Submit></Submit>
-      <div>Search</div>
     </>
   );
 }
