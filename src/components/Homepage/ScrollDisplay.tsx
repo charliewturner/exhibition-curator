@@ -1,12 +1,12 @@
 import DisplayItem from "./DisplayItem";
-import FocusInfo from "./FocusInfo";
 
 function ScrollDisplay(): React.JSX.Element {
+  //Replace individual render of DisplayItem with a looped render
   return (
     <>
-      <div>ScrollDisplay</div>
-      <DisplayItem></DisplayItem>
-      <FocusInfo></FocusInfo>
+      <div id="scroll-container">
+        <DisplayItem></DisplayItem>
+      </div>
     </>
   );
 }

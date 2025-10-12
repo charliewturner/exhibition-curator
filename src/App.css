@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   border-style: solid;
 }
@@ -43,4 +47,46 @@
 
 .read-the-docs {
   color: #888;
+}
+
+* {
+  border-style: solid;
+  border-width: 3px;
+  border-color: black;
+  margin: 5px;
+}
+#homepage-container {
+  display: flex;
+  flex-direction: column;
+  width: 100v2;
+  height: 100vh;
+}
+
+#header-container {
+  display: flex;
+  height: 80px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 200px;
+}
+
+#header-container > * {
+  height: 90%;
+}
+
+#homepage-body {
+  display: flex;
+  flex-direction: column;
+}
+
+#display-item {
+  height: 300px;
+  position: relative;
+}
+
+#item-controls {
+  width: min-content;
+  position: absolute;
+  top: 0;
+  right: 0;
 }

@@ -4,9 +4,10 @@ import ProfileDropdown from "./ProfileDropdown";
 function Header(): React.JSX.Element {
   return (
     <>
-      <div>Header</div>
-      <Search></Search>
-      <ProfileDropdown></ProfileDropdown>
+      <div id="header-container">
+        <Search></Search>
+        <ProfileDropdown></ProfileDropdown>
+      </div>
     </>
   );
 }

@@ -1,7 +1,7 @@
 function ItemControls(): React.JSX.Element {
   return (
     <>
-      <div>ItemControls</div>
+      <div id="item-controls">ItemControls</div>
     </>
   );
 }

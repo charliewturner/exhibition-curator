@@ -1,10 +1,13 @@
-import SearchDisplayList from "./SearchDisplayList";
+import ScrollDisplay from "./ScrollDisplay";
+import FocusInfo from "./FocusInfo";
 
 function Body(): React.JSX.Element {
   return (
     <>
-      <div>Body</div>
-      <SearchDisplayList></SearchDisplayList>
+      <div id="homepage-body">
+        <ScrollDisplay></ScrollDisplay>
+        <FocusInfo></FocusInfo>
+      </div>
     </>
   );
 }

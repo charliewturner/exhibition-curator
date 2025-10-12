@@ -4,9 +4,10 @@ import Body from "./Body";
 function Homepage(): React.JSX.Element {
   return (
     <>
-      <div>Homepage</div>
-      <Header></Header>
-      <Body></Body>
+      <div id="homepage-container">
+        <Header></Header>
+        <Body></Body>
+      </div>
     </>
   );
 }

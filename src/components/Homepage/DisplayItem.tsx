@@ -3,8 +3,10 @@ import ItemControls from "./ItemControls";
 function DisplayItem(): React.JSX.Element {
   return (
     <>
-      <div>DisplayItem</div>
-      <ItemControls></ItemControls>
+      <div id="display-item">
+        DisplayItem
+        <ItemControls></ItemControls>
+      </div>
     </>
   );
 }
