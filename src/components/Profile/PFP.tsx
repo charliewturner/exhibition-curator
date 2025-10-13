@@ -1,7 +1,7 @@
 function PFP(): React.JSX.Element {
   return (
     <>
-      <div>PFP</div>
+      <div id="PFP">PFP</div>
     </>
   );
 }

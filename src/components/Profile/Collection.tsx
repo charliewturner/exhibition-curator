@@ -4,9 +4,11 @@ import CollectionHeader from "./CollectionHeader";
 function Collection(): React.JSX.Element {
   return (
     <>
-      <div>Collection</div>
-      <CollectionList></CollectionList>
-      <CollectionHeader></CollectionHeader>
+      <div id="collection-item">
+        collection item
+        <CollectionHeader></CollectionHeader>
+        <CollectionList></CollectionList>
+      </div>
     </>
   );
 }
