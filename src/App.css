@@ -110,6 +110,18 @@
 
 #profile-container {
   display: flex;
+  width: 90vw;
+  height: 90vh;
+  justify-content: center;
+  align-items: center;
+}
+
+#profile-container > * {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
 }
 
 #PFP {
