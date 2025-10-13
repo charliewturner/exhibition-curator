@@ -1,13 +1,25 @@
 import CollectionListItem from "./CollectionListItem";
 
-// render list of collection items
+export type CollectionItem = {
+  id: string;
+  src: string;
+  alt?: string;
+  label?: string;
+};
 
-function CollectionList(): React.JSX.Element {
+function CollectionList({
+  items,
+}: {
+  items: CollectionItem[];
+}): React.JSX.Element {
   return (
-    <>
-      <div>CollectionList</div>
-      <CollectionListItem></CollectionListItem>
-    </>
+    <div className="collection-rail" role="list">
+      {items.map((it) => (
+        <div key={it.id} role="listitem">
+          <CollectionListItem src={it.src} alt={it.alt} label={it.label} />
+        </div>
+      ))}
+    </div>
   );
 }
 

@@ -1,15 +1,22 @@
-import CollectionList from "./CollectionList";
+import CollectionList, { type CollectionItem } from "./CollectionList";
 import CollectionHeader from "./CollectionHeader";
 
-function Collection(): React.JSX.Element {
+type Props = {
+  id: number | string;
+  name: string;
+  items: CollectionItem[];
+  onOpen?: (id: number | string) => void;
+};
+
+function Collection({ id, name, items, onOpen }: Props): React.JSX.Element {
   return (
-    <>
-      <div id="collection-item">
-        collection item
-        <CollectionHeader></CollectionHeader>
-        <CollectionList></CollectionList>
+    <section id="collection-item" className="collection-card" aria-label={name}>
+      <CollectionHeader onClick={() => onOpen?.(id)}>{name}</CollectionHeader>
+
+      <div className="collection-card__body">
+        <CollectionList items={items} />
       </div>
-    </>
+    </section>
   );
 }
 
