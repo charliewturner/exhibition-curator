@@ -39,7 +39,7 @@
 * {
   border-style: solid;
   border-width: 3px;
-  border-color: black;
+  border-color: rgba(0, 0, 0, 0.363);
   margin: 5px;
 }
 #homepage-container {

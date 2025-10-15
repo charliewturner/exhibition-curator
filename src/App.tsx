@@ -1,13 +1,13 @@
 import "./App.css";
 import Homepage from "./components/Homepage/Homepage";
 
-import Profile from "./components/Profile/Profile";
+// import Profile from "./components/Profile/Profile";
 
 function App(): React.JSX.Element {
   return (
     <>
-      {/* <Homepage></Homepage> */}
-      <Profile></Profile>
+      <Homepage></Homepage>
+      {/* <Profile></Profile> */}
     </>
   );
 }
