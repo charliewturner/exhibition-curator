@@ -1,4 +1,4 @@
-function Password(): React.JSX.Element {
+function Password(){
   return (
     <>
       <div>Password</div>

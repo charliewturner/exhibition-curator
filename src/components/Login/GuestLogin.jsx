@@ -1,4 +1,4 @@
-function GuestLogin(): React.JSX.Element {
+function GuestLogin() {
   return (
     <>
       <div>GuestLogin</div>

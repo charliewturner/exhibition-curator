@@ -1,4 +1,4 @@
-function Socials(): React.JSX.Element {
+function Socials() {
   return (
     <>
       <div>Socials</div>

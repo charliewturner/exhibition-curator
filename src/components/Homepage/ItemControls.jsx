@@ -1,4 +1,4 @@
-function ItemControls(): React.JSX.Element {
+function ItemControls() {
   return (
     <>
       <div id="item-controls">ItemControls</div>

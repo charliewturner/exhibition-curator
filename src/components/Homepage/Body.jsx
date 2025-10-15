@@ -1,7 +1,7 @@
 import ScrollDisplay from "./ScrollDisplay";
 import FocusInfo from "./FocusInfo";
 
-function Body(): React.JSX.Element {
+function Body() {
   return (
     <>
       <div id="homepage-body">

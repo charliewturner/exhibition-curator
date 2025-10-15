@@ -1,4 +1,4 @@
-function FocusInfo(): React.JSX.Element {
+function FocusInfo(){
   return (
     <>
       <div id="focus-info">FocusInfo</div>

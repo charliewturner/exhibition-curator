@@ -3,7 +3,7 @@ import SearchInput from "./SearchInput";
 import Sort from "./Sort";
 import Submit from "./Submit";
 
-function Search(): React.JSX.Element {
+function Search() {
   return (
     <>
       <Filters></Filters>

@@ -1,6 +1,6 @@
 import Header from "./Header";
 
-function Login(): React.JSX.Element {
+function Login() {
   return (
     <>
       <div>Login</div>

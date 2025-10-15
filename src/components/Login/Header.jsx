@@ -1,4 +1,4 @@
-function Header(): React.JSX.Element {
+function Header(){
   return (
     <>
       <div>Header</div>

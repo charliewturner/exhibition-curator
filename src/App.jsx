@@ -4,7 +4,7 @@ import Homepage from "./components/Homepage/Homepage";
 import getAPI from "./components/getApi"
 // import Profile from "./components/Profile/Profile";
 
-function App(): React.JSX.Element {
+function App(){
 
     const [apiURL, setApiURL] = useState(
     "https://data.getty.edu/museum/collection/group/4d54a8e2-f16b-4784-92aa-2a2844ae63b1"

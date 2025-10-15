@@ -1,4 +1,4 @@
-function Sort(): React.JSX.Element {
+function Sort() {
   return (
     <>
       <div>Sort</div>

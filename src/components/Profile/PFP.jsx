@@ -1,4 +1,4 @@
-function PFP(): React.JSX.Element {
+function PFP(){
   return (
     <>
       <div id="PFP">PFP</div>

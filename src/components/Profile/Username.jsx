@@ -1,4 +1,4 @@
-function Username(): React.JSX.Element {
+function Username() {
   return (
     <>
       <div>Username</div>

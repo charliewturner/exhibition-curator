@@ -1,7 +1,7 @@
 import Search from "./Search";
 import ProfileDropdown from "./ProfileDropdown";
 
-function Header(): React.JSX.Element {
+function Header() {
   return (
     <>
       <div id="header-container">

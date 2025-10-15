@@ -1,4 +1,4 @@
-function UserInfo(): React.JSX.Element {
+function UserInfo() {
   return (
     <>
       <div>UserInfo</div>

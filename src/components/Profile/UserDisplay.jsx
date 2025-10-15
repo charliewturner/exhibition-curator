@@ -2,7 +2,7 @@ import PFP from "./PFP";
 import Username from "./Username";
 import UserInfo from "./UserInfo";
 
-function UserDisplay(): React.JSX.Element {
+function UserDisplay() {
   return (
     <>
       <div id="user-container">

@@ -1,4 +1,4 @@
-function CreateAccount(): React.JSX.Element {
+function CreateAccount() {
   return (
     <>
       <div>CreateAccount</div>

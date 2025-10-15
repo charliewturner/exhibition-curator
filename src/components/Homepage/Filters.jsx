@@ -1,4 +1,4 @@
-function Filters(): React.JSX.Element {
+function Filters() {
   return (
     <>
       <div>Filters</div>

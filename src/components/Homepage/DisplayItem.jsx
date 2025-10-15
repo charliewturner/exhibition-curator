@@ -1,6 +1,6 @@
 import ItemControls from "./ItemControls";
 
-function DisplayItem(): React.JSX.Element {
+function DisplayItem() {
   return (
     <>
       <div id="display-item">

@@ -1,11 +1,8 @@
-import type { ReactNode } from "react";
+import { ReactNode } from "react";
 
-type Props = {
-  children: ReactNode;
-  onClick?: () => void; // wire this up later
-};
 
-function CollectionHeader({ children, onClick }: Props): React.JSX.Element {
+
+function CollectionHeader({ children, onClick }){
   return (
     <button
       type="button"

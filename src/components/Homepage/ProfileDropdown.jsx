@@ -1,4 +1,4 @@
-function ProfileDropdown(): React.JSX.Element {
+function ProfileDropdown() {
   return (
     <>
       <div id="profile-dropdown">ProfileDropdown</div>

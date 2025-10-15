@@ -1,17 +1,7 @@
+
 import CollectionListItem from "./CollectionListItem";
 
-export type CollectionItem = {
-  id: string;
-  src: string;
-  alt?: string;
-  label?: string;
-};
-
-function CollectionList({
-  items,
-}: {
-  items: CollectionItem[];
-}): React.JSX.Element {
+export default function CollectionList({ items = [] }) {
   return (
     <div className="collection-rail" role="list">
       {items.map((it) => (
@@ -22,5 +12,3 @@ function CollectionList({
     </div>
   );
 }
-
-export default CollectionList;

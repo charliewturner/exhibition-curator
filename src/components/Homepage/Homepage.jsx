@@ -1,7 +1,7 @@
 import Header from "./Header";
 import Body from "./Body";
 
-function Homepage(): React.JSX.Element {
+function Homepage() {
   return (
     <>
       <div id="homepage-container">

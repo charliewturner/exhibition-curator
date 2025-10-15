@@ -1,4 +1,4 @@
-function Submit(): React.JSX.Element {
+function Submit() {
   return (
     <>
       <div>Submit</div>

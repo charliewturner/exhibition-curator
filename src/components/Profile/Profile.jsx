@@ -1,7 +1,7 @@
 import UserDisplay from "./UserDisplay";
 import Collections from "./Collections";
 
-function Profile(): React.JSX.Element {
+function Profile() {
   return (
     <>
       <div id="profile-container">

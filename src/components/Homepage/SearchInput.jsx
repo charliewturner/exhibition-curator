@@ -1,4 +1,4 @@
-function SearchInput(): React.JSX.Element {
+function SearchInput(){
   return (
     <>
       <div id="search-input">SearchInput</div>
