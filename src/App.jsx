@@ -1,71 +1,10 @@
-// import "./App.css";
-// import { useEffect, useState } from "react";
-// import Homepage from "./components/Homepage/Homepage";
-// import getAPI from "./components/getApi"; // your fetch->json helper
-
-// export default function App() {
-//   const [status, setStatus] = useState("loading");
-
-//   useEffect(() => {
-//     const ctrl = new AbortController();
-
-//     (async () => {
-//       setStatus("loading");
-//       try {
-//         // -------- 1) THE MET: search -> fetch objects ----------
-//         // Search for object IDs that have images
-//         const search = await getAPI(
-//           "https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=painting",
-//           { signal: ctrl.signal }
-//         );
-
-//         console.log(search.objectIDs);
-//         const ids = Array.isArray(search.objectIDs)
-//           ? search.objectIDs.slice(0, 24)
-//           : [];
-
-//         // Fetch the objects in parallel
-//         const metObjects = await Promise.all(
-//           ids.map((id) =>
-//             getAPI(
-//               `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`,
-//               { signal: ctrl.signal }
-//             ).catch(() => null)
-//           )
-//         );
-
-//         console.log("Met objects JSON (raw):", metObjects.filter(Boolean));
-
-//         const gettyObjectId = "109D3M"; // <-- put a real object id here from a Getty artwork page
-//         const gettyObject = await getAPI(
-//           `https://data.getty.edu/museum/collection/object/${gettyObjectId}`,
-//           {
-//             signal: ctrl.signal,
-//             headers: { Accept: "application/ld+json" }, // ask for JSON-LD
-//           }
-//         ).catch(() => null);
-
-//         console.log("Getty object JSON-LD (raw):", gettyObject);
-
-//         setStatus("success");
-//       } catch (e) {
-//         console.error("Fetch failed:", e);
-//         if (e?.name !== "AbortError") setStatus("error");
-//       }
-//     })();
-
-//     return () => ctrl.abort();
-//   }, []);
-
-//   return <Homepage status={status} />;
-// }
-
 import "./App.css";
 import { useEffect, useState } from "react";
 import Homepage from "./components/Homepage/Homepage";
 import getAPI from "./components/getApi";
 
 const MET = "https://collectionapi.metmuseum.org/public/collection/v1";
+const VAM = "https://api.vam.ac.uk/v2";
 
 // tiny helper for batching fetches
 function chunk(arr, n) {
@@ -77,30 +16,32 @@ function chunk(arr, n) {
 export default function App() {
   const [status, setStatus] = useState("loading");
 
+  const [metItems, setMetItems] = useState([]);
+  const [vamItems, setVamItems] = useState([]);
+
   useEffect(() => {
     const ctrl = new AbortController();
 
     (async () => {
       setStatus("loading");
       try {
-        // 1) Get departments
+        // A) MET — departments -> object IDs -> 24 objects with images
+
         const { departments } = await getAPI(`${MET}/departments`, {
           signal: ctrl.signal,
         });
 
-        // 2) Choose departments (paintings + antiquities-ish). Adjust as you like.
         const wantedNames = [
           "Greek and Roman Art",
           "Ancient Near Eastern Art",
           "Egyptian Art",
           "Medieval Art",
-          // add more if desired: "Islamic Art", "Asian Art", etc.
+          // add  "Islamic Art", "Asian Art", etc.
         ];
         const wantedIds = departments
           .filter((d) => wantedNames.includes(d.displayName))
           .map((d) => d.departmentId);
 
-        // 3) Get object IDs for those departments (OR with "|")
         const idsResp = await getAPI(
           `${MET}/objects${
             wantedIds.length ? `?departmentIds=${wantedIds.join("|")}` : ""
@@ -110,15 +51,14 @@ export default function App() {
 
         const ids = Array.isArray(idsResp.objectIDs) ? idsResp.objectIDs : [];
         console.log(
-          "Total candidate IDs:",
+          "MET: total candidate IDs:",
           ids.length,
           "Departments:",
           wantedIds
         );
 
-        // 4) Fetch first 24 objects (batched)
         const pick = ids.slice(0, 24);
-        const results = [];
+        const metResults = [];
         for (const batch of chunk(pick, 8)) {
           const got = await Promise.allSettled(
             batch.map((id) =>
@@ -126,33 +66,63 @@ export default function App() {
             )
           );
           for (const g of got)
-            if (g.status === "fulfilled") results.push(g.value);
+            if (g.status === "fulfilled") metResults.push(g.value);
         }
 
-        const withImages = results.filter(
+        const metWithImages = metResults.filter(
           (o) => o?.primaryImageSmall || o?.primaryImage
         );
-        console.log("Met objects JSON (with images):", withImages);
+        console.log("MET objects (24, with images):", metWithImages);
+        setMetItems(metWithImages);
 
-        // -------- Optional: fetch ONE specific Met object by ID (Option A) --------
-        // Replace with any Met objectID you have, e.g. 239987
-        const MET_OBJECT_ID = 239987; // example
-        try {
-          const singleMetObject = await getAPI(
-            `${MET}/objects/${MET_OBJECT_ID}`,
-            {
-              signal: ctrl.signal,
-            }
-          );
-          console.log(`Single Met object ${MET_OBJECT_ID}:`, singleMetObject);
-        } catch (e) {
-          console.warn(`Failed to fetch Met object ${MET_OBJECT_ID}:`, e);
-        }
+        // B) V&A — search 24 records with images
+
+        const vamParams = new URLSearchParams({
+          images_exist: "1", // only items with images
+          page_size: "24",
+          page_offset: "0",
+          // q: "bronze",        // optional: add a keyword
+        });
+
+        const vamList = await getAPI(
+          `${VAM}/objects/search?${vamParams.toString()}`,
+          {
+            signal: ctrl.signal,
+          }
+        );
+
+        const records = Array.isArray(vamList.records) ? vamList.records : [];
+        const vamMapped = records
+          .map((r) => {
+            const iiifBase =
+              r._images?._iiif_image_base_url ||
+              (r._primaryImageId
+                ? `https://framemark.vam.ac.uk/collections/${r._primaryImageId}`
+                : null);
+
+            const imageUrl = iiifBase
+              ? `${iiifBase}/full/843,/0/default.jpg`
+              : r._images?._primary_thumbnail || null;
+
+            return {
+              id: r.systemNumber, // e.g., "O828146"
+              title: r._primaryTitle || r.objectType || "(untitled)",
+              maker: r._primaryMaker__name || "",
+              date: r._primaryDate || "",
+              imageUrl,
+            };
+          })
+          .filter((x) => x.imageUrl);
+
+        console.log("V&A items (24 with images):", vamMapped);
+        setVamItems(vamMapped);
 
         setStatus("success");
       } catch (e) {
-        console.error("Fetch failed:", e);
-        if (e?.name !== "AbortError") setStatus("error");
+        if (e?.name !== "AbortError") {
+          console.error("Fetch failed:", e);
+          setStatus("error");
+        }
       }
     })();
 
