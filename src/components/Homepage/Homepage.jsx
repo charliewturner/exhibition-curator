@@ -32,7 +32,7 @@ export default function Homepage({
                   src={it.imageUrl}
                   alt={it.title}
                   style={{
-                    width: "100%",
+                    width: "90vw",
                     height: 140,
                     objectFit: "cover",
                     borderRadius: 8,
