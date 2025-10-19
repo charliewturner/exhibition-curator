@@ -25,8 +25,15 @@ function mapMet(o) {
     date: o.objectDate || "",
     imageUrl,
     source: "met",
+    culture: o.culture || "",
+    dimensions: o.dimensions || "",
+    department: o.department || "",
+    classification: o.classification || "",
+    creditLine: o.creditLine || "",
+    objectURL: o.objectURL || null,
   };
 }
+
 function mapVam(r) {
   const iiifBase =
     r._images?._iiif_image_base_url ||
@@ -37,6 +44,13 @@ function mapVam(r) {
     ? `${iiifBase}/full/843,/0/default.jpg`
     : r._images?._primary_thumbnail || null;
   if (!imageUrl) return null;
+
+  const dims = Array.isArray(r.dimensions)
+    ? r.dimensions
+        .map((d) => `${d.dimension} ${d.value}${d.unit ? ` ${d.unit}` : ""}`)
+        .join("; ")
+    : r.dimensions || "";
+
   return {
     id: r.systemNumber,
     title: r._primaryTitle || r.objectType || "(untitled)",
@@ -44,6 +58,12 @@ function mapVam(r) {
     date: r._primaryDate || "",
     imageUrl,
     source: "vam",
+    culture: r.culture || "",
+    dimensions: dims,
+    department: r.museumLocation || "",
+    classification: r.objectType || "",
+    creditLine: r.creditLine || "", // optional
+    objectURL: r._links?.self?.href || r._currentLocation?.[0]?.url || null,
   };
 }
 
@@ -117,6 +137,7 @@ export default function App() {
   const [selectedItem, setSelectedItem] = useState(null);
 
   function handleOpen(item) {
+    console.log("Opened item:", item);
     setSelectedItem(item);
   }
   function handleClose() {

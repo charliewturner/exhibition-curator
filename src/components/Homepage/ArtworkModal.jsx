@@ -80,10 +80,38 @@ export default function ArtworkModal({ item, onClose }) {
                   Source: {item.source.toUpperCase()}
                 </p>
               )}
+              {/* Extra metadata */}
+              <div style={{ display: "grid", gap: 6, fontSize: 14 }}>
+                {item.culture && (
+                  <p>
+                    <strong>Culture:</strong> {item.culture}
+                  </p>
+                )}
+                {item.dimensions && (
+                  <p>
+                    <strong>Dimensions:</strong> {item.dimensions}
+                  </p>
+                )}
+                {item.department && (
+                  <p>
+                    <strong>Department:</strong> {item.department}
+                  </p>
+                )}
+                {item.classification && (
+                  <p>
+                    <strong>Classification:</strong> {item.classification}
+                  </p>
+                )}
+                {item.creditLine && (
+                  <p>
+                    <strong>Credit:</strong> {item.creditLine}
+                  </p>
+                )}
+              </div>
               {item.objectURL && (
                 <p style={{ marginTop: 12 }}>
                   <a href={item.objectURL} target="_blank" rel="noreferrer">
-                    View on source ↗
+                    View source ↗
                   </a>
                 </p>
               )}
