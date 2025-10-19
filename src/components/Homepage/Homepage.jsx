@@ -46,7 +46,11 @@ export default function Homepage({
                 <li
                   key={`${it.source}:${it.id}`}
                   onClick={() => onOpenItem?.(it)}
-                  style={{ cursor: "pointer" }}
+                  style={{
+                    cursor: "pointer",
+                    display: "flex", // ⬅️ make the card a column
+                    flexDirection: "column",
+                  }}
                 >
                   <img
                     src={it.imageUrl}
@@ -58,22 +62,35 @@ export default function Homepage({
                       borderRadius: 8,
                     }}
                   />
+
+                  {/* Wrap the text in a flex-1 block so it takes leftover space */}
                   <div
-                    style={{ fontWeight: 600, marginTop: 6, fontSize: 14 }}
-                    title={it.title}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      flex: 1,
+                    }}
                   >
-                    {truncateWords(it.title, MAX_WORDS)}
-                  </div>
-                  <div style={{ color: "#6b7280", fontSize: 12 }}>
-                    {it.maker}
-                    {it.maker && it.date ? " · " : ""}
-                    {it.date}
-                  </div>
-                  <div style={{ color: "#94a3b8", fontSize: 11, marginTop: 2 }}>
-                    {it.source.toUpperCase()}
+                    <div
+                      style={{ fontWeight: 600, marginTop: 6, fontSize: 14 }}
+                      title={it.title}
+                    >
+                      {truncateWords(it.title, MAX_WORDS)}
+                    </div>
+                    <div style={{ color: "#6b7280", fontSize: 12 }}>
+                      {it.maker}
+                      {it.maker && it.date ? " · " : ""}
+                      {it.date}
+                    </div>
+                    <div
+                      style={{ color: "#94a3b8", fontSize: 11, marginTop: 2 }}
+                    >
+                      {it.source.toUpperCase()}
+                    </div>
                   </div>
 
-                  <div style={{ marginTop: 8 }}>
+                  {/* Button pinned to bottom */}
+                  <div style={{ marginTop: "auto", paddingTop: 8 }}>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -87,6 +104,7 @@ export default function Homepage({
                         color: saved ? "#fff" : "#111827",
                         cursor: "pointer",
                         fontWeight: 600,
+                        width: "100%", // optional: make all buttons same width
                       }}
                       aria-label={
                         saved ? "Remove from collection" : "Add to collection"

@@ -163,7 +163,6 @@ export default function App() {
   const [selectedItem, setSelectedItem] = useState(null);
 
   async function handleOpen(item) {
-    console.log("Opened item:", item);
     setSelectedItem(item);
 
     if (item?.source === "vam") {
