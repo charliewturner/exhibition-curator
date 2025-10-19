@@ -300,3 +300,25 @@
 .btn { border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; font: 600 13px/1 system-ui; cursor: pointer; }
 .btn--ghost { background: #fff; border-color: #e5e7eb; }
 .btn--ghost:hover { background: #f9fafb; }
+
+
+.result-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px 10px 18px;      /* extra bottom padding for the gap */
+  background: #fff;
+  transition: box-shadow 160ms ease, transform 160ms ease, border-color 160ms ease;
+}
+
+/* subtle lift + shadow on hover */
+.result-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+  border-color: #e2e8f0;
+}
+
+/* keep the Save button aligned to the bottom consistently */
+.result-card__actions {
+  margin-top: auto;             /* pushes this block to the bottom */
+  padding-top: 8px;             /* space above the button */
+}

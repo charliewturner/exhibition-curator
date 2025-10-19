@@ -26,7 +26,14 @@ export default function Homepage({
       <Header onSearchSubmit={onSearchSubmit} />
       <Body status={status} heroItems={heroItems} onOpenItem={onOpenItem} />
 
-      <section style={{ padding: 16, maxWidth: "1100px", margin: "0 auto" }}>
+      <section
+        style={{
+          padding: 16,
+          maxWidth: "1100px",
+          margin: "0 auto",
+          width: "90vw",
+        }}
+      >
         {status === "loading" && <div>Searching…</div>}
         {status === "error" && <div>Something went wrong.</div>}
         {status === "success" && results?.length > 0 && (
@@ -46,24 +53,24 @@ export default function Homepage({
                 <li
                   key={`${it.source}:${it.id}`}
                   onClick={() => onOpenItem?.(it)}
+                  className="result-card" // ← add class
                   style={{
-                    cursor: "pointer",
-                    display: "flex", // ⬅️ make the card a column
+                    display: "flex",
                     flexDirection: "column",
+                    cursor: "pointer",
                   }}
                 >
                   <img
                     src={it.imageUrl}
                     alt={it.title}
                     style={{
-                      width: "90vw",
+                      width: "100%", // keep card width consistent
                       height: 140,
                       objectFit: "cover",
                       borderRadius: 8,
                     }}
                   />
 
-                  {/* Wrap the text in a flex-1 block so it takes leftover space */}
                   <div
                     style={{
                       display: "flex",
@@ -89,8 +96,10 @@ export default function Homepage({
                     </div>
                   </div>
 
-                  {/* Button pinned to bottom */}
-                  <div style={{ marginTop: "auto", paddingTop: 8 }}>
+                  {/* Button pinned to bottom with extra bottom gap */}
+                  <div className="result-card__actions">
+                    {" "}
+                    {/* ← add class */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -104,7 +113,7 @@ export default function Homepage({
                         color: saved ? "#fff" : "#111827",
                         cursor: "pointer",
                         fontWeight: 600,
-                        width: "100%", // optional: make all buttons same width
+                        width: "100%",
                       }}
                       aria-label={
                         saved ? "Remove from collection" : "Add to collection"
