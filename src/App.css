@@ -244,3 +244,59 @@
   background: #0ea5e9;
   border-color: #0ea5e9;
 }
+
+
+/* Fullscreen overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+}
+
+/* Dark backdrop */
+.overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55); /* slate-900/55 */
+  border: 0;
+  cursor: pointer;
+}
+
+/* Centered panel */
+.overlay__panel {
+  position: relative;
+  width: min(1000px, 92vw);
+  max-height: 88vh;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Top bar */
+.overlay__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+}
+.overlay__bar h2 { margin: 0; font: 700 18px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+
+/* Body area scrolls if content is tall */
+.overlay__body {
+  padding: 16px;
+  overflow: auto;
+  max-height: calc(88vh - 56px);
+}
+
+/* Simple button */
+.btn { border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; font: 600 13px/1 system-ui; cursor: pointer; }
+.btn--ghost { background: #fff; border-color: #e5e7eb; }
+.btn--ghost:hover { background: #f9fafb; }

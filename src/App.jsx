@@ -114,6 +114,15 @@ export default function App() {
   const [heroItems, setHeroItems] = useState([]); // you already use this
   const [results, setResults] = useState([]); // search results list
 
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  function handleOpen(item) {
+    setSelectedItem(item);
+  }
+  function handleClose() {
+    setSelectedItem(null);
+  }
+
   // initial load for hero (reuse your previous combined fetch or keep as-is)
   useEffect(() => {
     const ctrl = new AbortController();
@@ -164,6 +173,9 @@ export default function App() {
       heroItems={heroItems}
       results={results}
       onSearchSubmit={handleSearchSubmit}
+      onOpenItem={handleOpen}
+      selectedItem={selectedItem}
+      onCloseItem={handleClose}
     />
   );
 }

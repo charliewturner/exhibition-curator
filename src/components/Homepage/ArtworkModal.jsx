@@ -10,7 +10,7 @@ export default function ArtworkModal({ item, onClose }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  // Focus the close button when opening (basic focus mgmt)
+  // Focus the close button when opening
   useEffect(() => {
     closeRef.current?.focus();
   }, []);
@@ -24,23 +24,26 @@ export default function ArtworkModal({ item, onClose }) {
       aria-modal="true"
       aria-label="Artwork details"
     >
+      {/* backdrop click closes */}
       <button
         className="overlay__backdrop"
         onClick={onClose}
         aria-label="Close"
       />
-      <div className="overlay__panel">
+
+      <div className="overlay__panel" onClick={(e) => e.stopPropagation()}>
         <div className="overlay__bar">
-          <h2 style={{ margin: 0 }}>{item.title || "(untitled)"}</h2>
+          <h2>{item.title || "(untitled)"}</h2>
           <button
             ref={closeRef}
             className="btn btn--ghost"
             onClick={onClose}
-            aria-label="Close details"
+            aria-label="Close"
           >
             ✕
           </button>
         </div>
+
         <div className="overlay__body">
           <div
             style={{
@@ -54,10 +57,6 @@ export default function ArtworkModal({ item, onClose }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "#fff",
-                border: "1px solid #e5e7eb",
-                borderRadius: 12,
-                padding: 8,
               }}
             >
               <img
@@ -71,24 +70,20 @@ export default function ArtworkModal({ item, onClose }) {
                 }}
               />
             </div>
-            <div style={{ alignSelf: "start" }}>
+            <div>
               <p style={{ margin: "4px 0 8px", color: "#6b7280" }}>
                 <strong>{item.maker || "Unknown maker"}</strong>
                 {item.date ? ` · ${item.date}` : ""}
               </p>
-
-              {/* Room for extra fields if you have them later */}
               {item.source && (
                 <p style={{ marginTop: 8, color: "#94a3b8", fontSize: 12 }}>
                   Source: {item.source.toUpperCase()}
                 </p>
               )}
-
-              {/* Example: link out if you store objectURL later */}
               {item.objectURL && (
                 <p style={{ marginTop: 12 }}>
                   <a href={item.objectURL} target="_blank" rel="noreferrer">
-                    View on source site ↗
+                    View on source ↗
                   </a>
                 </p>
               )}

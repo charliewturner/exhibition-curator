@@ -1,16 +1,20 @@
 import Header from "./Header";
 import Body from "./Body";
+import ArtworkModal from "./ArtworkModal";
 
 export default function Homepage({
   status = "loading",
   heroItems = [],
   results = [],
   onSearchSubmit,
+  onOpenItem,
+  selectedItem,
+  onCloseItem,
 }) {
   return (
     <div id="homepage-container">
       <Header onSearchSubmit={onSearchSubmit} />
-      <Body status={status} heroItems={heroItems} />
+      <Body status={status} heroItems={heroItems} onOpenItem={onOpenItem} />
       {/* Simple results readout (replace with your own list later) */}
       <section style={{ padding: 16, maxWidth: "1100px", margin: "0 auto" }}>
         {status === "loading" && <div>Searching…</div>}
@@ -27,7 +31,11 @@ export default function Homepage({
             }}
           >
             {results.map((it) => (
-              <li key={`${it.source}:${it.id}`}>
+              <li
+                key={`${it.source}:${it.id}`}
+                onClick={() => onOpenItem?.(it)}
+                style={{ cursor: "pointer" }}
+              >
                 <img
                   src={it.imageUrl}
                   alt={it.title}
@@ -54,6 +62,7 @@ export default function Homepage({
           </ul>
         )}
       </section>
+      <ArtworkModal item={selectedItem} onClose={onCloseItem} />
     </div>
   );
 }

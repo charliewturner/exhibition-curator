@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 
-export default function HeroCarousel({ items = [], autoplayMs = 7000 }) {
+export default function HeroCarousel({
+  items = [],
+  autoplayMs = 7000,
+  onOpenItem,
+}) {
   const safeItems = useMemo(() => items.filter((i) => i?.imageUrl), [items]);
   const [idx, setIdx] = useState(0);
 
@@ -51,7 +55,12 @@ export default function HeroCarousel({ items = [], autoplayMs = 7000 }) {
           //     <img src={prev.imageUrl} alt={prev.title || "Previous artwork"} />
           //   </figure>
 
-          <figure className="hero-slide hero-slide--side" aria-hidden="true">
+          <figure
+            className="hero-slide hero-slide--side"
+            aria-hidden="true"
+            onClick={() => onOpenItem?.(prev)}
+            style={{ cursor: "pointer" }}
+          >
             <div className="hero-media">
               <img
                 className="hero-img"
@@ -66,7 +75,11 @@ export default function HeroCarousel({ items = [], autoplayMs = 7000 }) {
           //   <figure className="hero-slide hero-slide--center">
           //     <img src={current.imageUrl} alt={current.title || "Artwork"} />
 
-          <figure className="hero-slide hero-slide--center">
+          <figure
+            className="hero-slide hero-slide--center"
+            onClick={() => onOpenItem?.(current)}
+            style={{ cursor: "pointer" }}
+          >
             <div className="hero-media">
               <img
                 className="hero-img"
@@ -93,7 +106,12 @@ export default function HeroCarousel({ items = [], autoplayMs = 7000 }) {
           //     <img src={next.imageUrl} alt={next.title || "Next artwork"} />
           //   </figure>
 
-          <figure className="hero-slide hero-slide--side" aria-hidden="true">
+          <figure
+            className="hero-slide hero-slide--side"
+            aria-hidden="true"
+            onClick={() => onOpenItem?.(next)}
+            style={{ cursor: "pointer" }}
+          >
             <div className="hero-media">
               <img
                 className="hero-img"
