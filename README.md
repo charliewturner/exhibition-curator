@@ -18,8 +18,6 @@ The app is built for speed and usability --- leveraging **Vite** for fast builds
 Features
 --------
 
--   **Responsive Design** -- Works smoothly across desktop and mobile devices.
-
 -   **Art Exhibition Catalogue** -- Displays curated artworks and related information.
 
 -   **Dynamic Filtering and Browsing** -- Users can easily navigate through exhibitions.
@@ -122,8 +120,6 @@ Future Improvements
 -   Introduce user authentication for private curator collections.
 
 -   Integrate with a backend or CMS for artwork data.
-
--   Improve accessibility (ARIA labels, keyboard navigation).
 
 * * * * *
 
