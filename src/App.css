@@ -1,4 +1,4 @@
-/* ===== Base / Variables ===== */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,7 +15,7 @@
 
 #root { margin: 0 auto; text-align: center; }
 
-/* ===== Homepage Layout ===== */
+
 #homepage-container {
   display: flex;
   flex-direction: column;
@@ -23,7 +23,7 @@
   min-height: 95vh;
 }
 
-/* ===== Header / Search ===== */
+
 #header-container {
   display: flex;
   height: 80px;
@@ -42,32 +42,39 @@
 
 #header-container {
   display: flex;
-  justify-content: center;   /* horizontally center content */
-  align-items: center;       /* vertical centering */
+  justify-content: center;   
+  align-items: center;       
   padding: 12px 16px;
 }
 
-/* Center the form itself */
+
 .search-form {
   display: flex;
   align-items: center;
-  justify-content: center;   /* horizontally center the children */
+  justify-content: center;   
   gap: 8px;
   width: 100%;
-  max-width: 900px;          /* keeps it from stretching too wide */
-  margin: 0 auto;            /* centers in header */
+  max-width: 900px;          
+  margin: 0 auto;            
 }
 
-/* Make the input grow nicely; controls stay compact */
+
 #search-input {
   flex: 1;
-  min-width: 280px;          /* tweak as you like */
+  min-width: 280px;  
+ box-shadow: 1px 1px 18px rgba(0, 0, 0, 0.144);   
+ padding: 20px;
+ margin-right: 20px; 
 }
 
-/* optional: keep selects/buttons from growing */
+
 .search-form select,
 .search-form button {
   flex: 0 0 auto;
+  
+}
+.search-form button{
+  color: #6b7280;
 }
 form {
   align-items: end;
@@ -82,12 +89,12 @@ form > *{
 #search-input {
   display: flex;
   flex-grow: 1;
-  max-width: 900px; /* keep search from stretching too wide */
+  max-width: 900px; 
 }
 
 #profile-dropdown { margin-left: 16px; }
 
-/* ===== Collections (horizontal rail) ===== */
+
 .collections { display: grid; gap: 16px; }
 
 .collections-grid {
@@ -96,7 +103,7 @@ form > *{
   gap: 16px;
   align-items: stretch;
   min-width: 0;
-  max-width: 50vw;     /* adjust or remove if you want full width */
+  max-width: 50vw;     
   margin: 0 auto;
 }
 
@@ -134,7 +141,7 @@ form > *{
 }
 .collection-card__body { padding: 12px; min-width: 0; }
 
-/* Horizontal rail */
+
 .collection-rail {
   display: grid;
   grid-auto-flow: column;
@@ -162,11 +169,11 @@ form > *{
   color: var(--text);
 }
 
-/* ===== Hero Carousel (center image + side previews) ===== */
+
 .hero {
   display: flex;
   flex-direction: column;
-  align-items: center; /* aligns dots with the active slide */
+  align-items: center; 
   gap: 12px;
   padding: 16px 0 24px;
 }
@@ -175,13 +182,13 @@ form > *{
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;       /* center the active slide perfectly */
+  justify-content: center;      
   width: min(1000px, 92vw);
   gap: 12px;
   margin: 0 auto;
 }
 
-/* Slides */
+
 .hero-slide {
   margin: 0;
   border-radius: 12px;
@@ -206,10 +213,10 @@ form > *{
   z-index: 1;
   width: min(260px, 36vw);
 }
-.hero-slide--side:first-of-type { left: 2%; }  /* left slide */
-.hero-slide--side:last-of-type  { right: 2%; } /* right slide */
+.hero-slide--side:first-of-type { left: 2%; }  
+.hero-slide--side:last-of-type  { right: 2%; } 
 
-/* Fixed-height media box + centered image (no cropping) */
+
 .hero-media {
   display: flex;
   align-items: center;
@@ -222,15 +229,15 @@ form > *{
 .hero-slide--side   .hero-media { height: 290px; }
 
 .hero-img {
-  height: 100%;     /* scale by height */
-  width: auto;      /* preserve aspect ratio */
-  max-width: 100%;  /* avoid horizontal overflow */
+  height: 100%;    
+  width: auto;      
+  max-width: 100%;  
   object-fit: contain;
   display: block;
   background: #fff;
 }
 
-/* Info under center image */
+
 .hero-info {
   padding: 10px 12px;
   border-top: 1px solid var(--border);
@@ -245,7 +252,7 @@ form > *{
   font: 500 13px/1.2 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 }
 
-/* Nav buttons */
+
 .hero-nav {
   position: absolute;
   top: 50%;
@@ -265,10 +272,10 @@ form > *{
 .hero-nav--right { right: -8px; }
 .hero-nav:hover  { filter: brightness(0.98); }
 
-/* Dots */
+
 .hero-dots {
   display: flex;
-  justify-content: center; /* matches centered slide */
+  justify-content: center; 
   gap: 6px;
   margin-top: 4px;
 }
@@ -281,12 +288,12 @@ form > *{
   cursor: pointer;
 }
 .hero-dot.is-active {
-  background: #0ea5e9;
-  border-color: #0ea5e9;
+  background: #000000;
+  border-color: #505050;
 }
 
 
-/* Fullscreen overlay */
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -295,7 +302,7 @@ form > *{
   place-items: center;
 }
 
-/* Dark backdrop */
+
 .overlay__backdrop {
   position: absolute;
   inset: 0;
@@ -304,7 +311,7 @@ form > *{
   cursor: pointer;
 }
 
-/* Centered panel */
+
 .overlay__panel {
   position: relative;
   width: min(1000px, 92vw);
@@ -317,7 +324,7 @@ form > *{
   z-index: 1;
 }
 
-/* Top bar */
+
 .overlay__bar {
   display: flex;
   align-items: center;
@@ -329,14 +336,14 @@ form > *{
 }
 .overlay__bar h2 { margin: 0; font: 700 18px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
 
-/* Body area scrolls if content is tall */
+
 .overlay__body {
   padding: 16px;
   overflow: auto;
   max-height: calc(88vh - 56px);
 }
 
-/* Simple button */
+
 .btn { border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; font: 600 13px/1 system-ui; cursor: pointer; }
 .btn--ghost { background: #fff; border-color: #e5e7eb; }
 .btn--ghost:hover { background: #f9fafb; }
@@ -345,21 +352,22 @@ form > *{
 .result-card {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 10px 10px 18px;      /* extra bottom padding for the gap */
+  padding: 10px 10px 18px;      
   background: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
   transition: box-shadow 160ms ease, transform 160ms ease, border-color 160ms ease;
 }
 
-/* subtle lift + shadow on hover */
+
 .result-card:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 9px 20px rgba(0, 0, 0, 0.5);
   transform: translateY(-2px);
   border-color: #e2e8f0;
 }
 
-/* keep the Save button aligned to the bottom consistently */
+
 .result-card__actions {
-  margin-top: auto;             /* pushes this block to the bottom */
-  padding-top: 8px;             /* space above the button */
+  margin-top: auto;             
+  padding-top: 8px;             
 }
 

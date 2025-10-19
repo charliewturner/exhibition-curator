@@ -5,8 +5,8 @@ export default function Submit() {
       style={{
         padding: "10px 14px",
         borderRadius: 10,
-        border: "1px solid #0ea5e9",
-        background: "#0ea5e9",
+        border: "1px solid #5f5f5fff",
+        background: "#5c5c5cff",
         color: "white",
         fontWeight: 700,
         cursor: "pointer",
