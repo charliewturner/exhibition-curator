@@ -5,26 +5,38 @@ import getAPI from "./components/getApi";
 
 const MET = "https://collectionapi.metmuseum.org/public/collection/v1";
 const VAM = "https://api.vam.ac.uk/v2";
-
 async function fetchVamDetail(systemNumber, signal) {
-  // Full record endpoint
   const d = await getAPI(`${VAM}/museumobject/${systemNumber}`, { signal });
-  console.log("V&A detail (raw):", d);
-  const rec = d?.record || d;
 
-  const dims = Array.isArray(rec?.dimensions)
+  const rec = d?.record || {};
+  const meta = d?.meta || {};
+
+  // dimensions can be an array of { dimension, value, unit } or a string
+  const dims = Array.isArray(rec.dimensions)
     ? rec.dimensions
-        .map((x) => `${x.dimension} ${x.value}${x.unit ? ` ${x.unit}` : ""}`)
+        .map((x) => [x.dimension, x.value, x.unit].filter(Boolean).join(" "))
         .join("; ")
-    : rec?.dimensions || "";
+    : rec.dimensions || "";
+
+  // preferred public page URL
+  const collectionHref =
+    meta?._links.collection_page?.href ||
+    rec?._links?.self?.href || // fallback if present
+    null;
+
+  console.log("V&A detail (raw):", d);
+  console.log("collection page:", d?.meta?._links.collection_page?.href);
+  console.log("dimensions raw:", d?.record?.dimensions);
 
   return {
-    culture: rec?.culture || "",
     dimensions: dims,
-    department: rec?.museumLocation || "",
-    classification: rec?.objectType || "",
-    creditLine: rec?.creditLine || "",
-    objectURL: rec?._links?.self?.href || null,
+    objectURL: collectionHref, // <- use this in your modal "View on source"
+    culture: rec.culture || "",
+    department: rec.museumLocation || "",
+    classification: rec.objectType || "",
+    creditLine: rec.creditLine || "",
+    // raw if you still want to inspect
+    raw: d,
   };
 }
 
