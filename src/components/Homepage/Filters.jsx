@@ -8,6 +8,7 @@ export default function Filters({ source, onChange }) {
         style={{
           padding: "9px 10px",
           borderRadius: 10,
+          height: "100%",
           border: "1px solid #e5e7eb",
         }}
       >

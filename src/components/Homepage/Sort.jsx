@@ -7,6 +7,7 @@ export default function Sort({ value, onChange }) {
         onChange={(e) => onChange(e.target.value)}
         style={{
           padding: "9px 10px",
+          height: "100%",
           borderRadius: 10,
           border: "1px solid #e5e7eb",
         }}

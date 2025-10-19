@@ -34,9 +34,49 @@
 }
 
 #header-container > * {
-  height: 90%;
+  height: 50px;
   display: flex;
   align-items: center;
+  
+}
+
+#header-container {
+  display: flex;
+  justify-content: center;   /* horizontally center content */
+  align-items: center;       /* vertical centering */
+  padding: 12px 16px;
+}
+
+/* Center the form itself */
+.search-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* horizontally center the children */
+  gap: 8px;
+  width: 100%;
+  max-width: 900px;          /* keeps it from stretching too wide */
+  margin: 0 auto;            /* centers in header */
+}
+
+/* Make the input grow nicely; controls stay compact */
+#search-input {
+  flex: 1;
+  min-width: 280px;          /* tweak as you like */
+}
+
+/* optional: keep selects/buttons from growing */
+.search-form select,
+.search-form button {
+  flex: 0 0 auto;
+}
+form {
+  align-items: end;
+}
+form > *{
+    height: 50px;
+  display: flex;
+  align-items: center;
+  
 }
 
 #search-input {
@@ -322,3 +362,4 @@
   margin-top: auto;             /* pushes this block to the bottom */
   padding-top: 8px;             /* space above the button */
 }
+

@@ -22,14 +22,11 @@ export default function Search({ onSearchSubmit, onSubmit }) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ display: "flex", gap: 8, alignItems: "center", width: "100%" }}
-    >
+    <form onSubmit={handleSubmit} className="search-form">
       <SearchInput value={q} onChange={setQ} />
       <Filters value={source} onChange={setSource} />
       <Sort value={sort} onChange={setSort} />
-      <Submit /> {/* should render <button type="submit">Search</button> */}
+      <Submit />
     </form>
   );
 }
