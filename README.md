@@ -1,250 +1,134 @@
-Curator Catalogue
-=================
+Exhibition Curator
+==================
 
-A React app for exploring artworks from multiple museum collections (currently **The Met** and **V&A**) with search, filtering, a hero carousel, and a **local-storage--backed "My Collection"** you can save to without logging in.
+**Live site:** <https://curator-catalogue.netlify.app>\
+**Tech stack:** React - Vite - JavaScript - CSS - Netlify
 
-Live demo: *(add your Netlify URL once deployed)*
+* * * * *
+
+Overview
+--------
+
+**Exhibition Curator** is a web-based catalogue and curation tool designed to help users explore, organize, and present art exhibitions digitally. It provides a simple and elegant interface for displaying artworks, managing exhibition information, and sharing curated collections online.
+
+The app is built for speed and usability --- leveraging **Vite** for fast builds and **React** for dynamic interactivity --- and deployed seamlessly on **Netlify** for continuous delivery and hosting.
 
 * * * * *
 
 Features
 --------
 
--   **Hero Carousel**: 3-up carousel with a prominent center image and side previews.
+-   **Responsive Design** -- Works smoothly across desktop and mobile devices.
 
--   **Search**: Keyword search across Met + V&A, with source filter and sort options.
+-   **Art Exhibition Catalogue** -- Displays curated artworks and related information.
 
--   **Results Grid**: Click any work to open a **details modal**.
+-   **Dynamic Filtering and Browsing** -- Users can easily navigate through exhibitions.
 
--   **My Collection**: Save/remove works to a personal collection stored in `localStorage`.
+-   **Modern Frontend Stack** -- Built with React and Vite for high performance.
 
--   **Collection Page**: View your saved items, open the same details modal, and search again.
+-   **Netlify Deployment** -- Automated production builds and instant hosting.
 
--   **Responsive UI**: Simple, CSS-first layout (no CSS framework required).
+-   **Clean UI** -- Focused, minimalist interface with intuitive navigation.
 
 * * * * *
 
 Tech Stack
 ----------
 
--   **React 19**, **Vite**
-
--   **React Router v6**
-
--   **Netlify Functions** for optional API proxying (e.g., handling CORS)
-
--   Plain **CSS** (in `App.css` / `index.css`)
-
--   Data sources:
-
-    -   **The Met Collection API**: `https://collectionapi.metmuseum.org`
-
-    -   **V&A API**: `https://api.vam.ac.uk/v2`
+| Category | Tools |
+| --- | --- |
+| Frontend Framework | React |
+| Build Tool | Vite |
+| Language | JavaScript (ES6+) |
+| Styling | CSS |
+| Hosting | Netlify |
 
 * * * * *
 
-Getting Started
----------------
+Project Setup
+-------------
 
-### 1) Install
+### 1\. Clone the Repository
+
+`git clone https://github.com/<your-username>/exhibition-curator.git
+cd exhibition-curator`
+
+### 2\. Install Dependencies
 
 `npm install`
 
-### 2) Run dev server
+### 3\. Run the Development Server
 
 `npm run dev`
 
-Vite will print a local URL like `http://localhost:5173`.
+Then open <http://localhost:5173> in your browser.
 
-### 3) Build
+### 4\. Build for Production
 
 `npm run build`
 
-### 4) Preview production build (optional)
+This creates an optimized build in the `dist/` directory.
+
+### 5\. Preview the Production Build (optional)
 
 `npm run preview`
 
 * * * * *
 
-Project Structure
+Deployment
+----------
+
+This site is hosted on **Netlify**.
+
+Netlify automatically runs the following command when deploying:
+
+`npm run build`
+
+It publishes the compiled files from:
+
+`/dist`
+
+The `netlify.toml` configuration ensures proper routing for a single-page app:
+
+`[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200`
+
+* * * * *
+
+Development Notes
 -----------------
 
-`.
-├── netlify/
-│   └── functions/
-│       ├── fitz-object.js       # example function (optional)
-│       └── getty-search.js      # example function (optional)
-├── src/
-│   ├── App.jsx                  # routes + data fetching orchestration
-│   ├── App.css / index.css      # global styles
-│   ├── main.jsx                 # React entry
-│   ├── components/
-│   │   ├── getApi.js            # tiny fetch->json helper
-│   │   ├── Homepage/
-│   │   │   ├── Homepage.jsx     # header + body + results + modal
-│   │   │   ├── Header.jsx       # includes Search + "My Collection" button
-│   │   │   ├── Search.jsx       # SearchInput + Filters + Sort + Submit
-│   │   │   ├── SearchInput.jsx
-│   │   │   ├── Filters.jsx
-│   │   │   ├── Sort.jsx
-│   │   │   ├── Submit.jsx
-│   │   │   ├── Body.jsx
-│   │   │   ├── HeroCarousel.jsx
-│   │   │   └── ArtworkModal.jsx
-│   │   └── collection/
-│   │       ├── CollectionContext.jsx # localStorage-backed "My Collection"
-│   │       └── CollectionPage.jsx    # saved items view
-│   └── ...
-└── vite.config.js`
+-   The project originally began in TypeScript but was migrated to **plain JavaScript** for simplicity.
+
+-   All `.ts` and `.tsx` files have been replaced with `.js`/`.jsx`.
+
+-   TypeScript configuration (`tsconfig.json`) and dependencies have been removed.
+
+-   The build now relies solely on **Vite's native build pipeline**.
 
 * * * * *
 
-How It Works
-------------
+Future Improvements
+-------------------
 
-### Data fetching
+-   Add artist/exhibit filtering and sorting options.
 
--   **The Met**
+-   Introduce user authentication for private curator collections.
 
-    -   `GET /public/collection/v1/search?hasImages=true&q=<term>` → returns `objectIDs[]`
+-   Integrate with a backend or CMS for artwork data.
 
-    -   Then fetch details: `GET /public/collection/v1/objects/<id>`
-
-    -   We normalize to a common item shape: `{ id, title, maker, date, imageUrl, ... }`
-
--   **V&A**
-
-    -   `GET /v2/objects/search?images_exist=1&q=<term>&page_size=24` → returns `records[]` (compact)
-
-    -   For many details (e.g., dimensions/culture/object page url), we optionally fetch:
-
-        -   `GET /v2/museumobject/<systemNumber>` (detail)
-
-            -   URL to public page often under `meta._links_collection_page.href`
-
-            -   Dimensions under `record.dimensions` (array/string)
-
--   **CORS**\
-    Both APIs usually support direct client calls. If you hit CORS or throttling issues, route via a **Netlify function** (see below).
-
-### Local "My Collection"
-
--   Implemented via `CollectionContext.jsx`, persisted in `localStorage` (`myCollectionV1`).
-
--   Helpers: `add(item)`, `remove(item)`, `toggle(item)`, `isSaved(item)`.
-
--   Access with `useCollection()` inside components.
-
-### Routing
-
--   `/` → homepage (carousel, search, results)
-
--   `/collection` → "My Collection" page
+-   Improve accessibility (ARIA labels, keyboard navigation).
 
 * * * * *
 
-Environment & Configuration
----------------------------
+License
+-------
 
-No API keys are required for the Met/V&A endpoints used here.
-
-If you choose to hide requests behind Netlify Functions (to avoid CORS or to add rate limiting), configure Netlify locally:
-
-### Netlify Dev (optional)
-
-`npm i -g netlify-cli
-netlify dev`
-
-This will run Vite and your `netlify/functions/*` lambdas locally at `/.netlify/functions/<name>`.
-
-**Example function usage:**
-
-`// client
-const res = await fetch('/.netlify/functions/some-proxy?url=' + encodeURIComponent(actualUrl));
-const json = await res.json();`
-
-* * * * *
-
-Common Scripts
---------------
-
--   `npm run dev` --- start Vite dev server
-
--   `npm run build` --- bundle for production
-
--   `npm run preview` --- serve the production build locally
-
-* * * * *
-
-Key Components (Where to edit)
-------------------------------
-
--   **Change hero dots color**: in `index.css` / `App.css` (`.hero-dot`, `.hero-dot.is-active`)
-
--   **Align Save buttons**: see `.result-card` styles and the `Homepage.jsx` list items
-
--   **Center search bar**: `.search-form` and `#header-container` styles
-
--   **Truncate result titles**: `Homepage.jsx` → `truncateWords()` helper
-
-* * * * *
-
-Troubleshooting
----------------
-
--   **Invalid hook call / BrowserRouter error**
-
-    -   Ensure only **one** copy of React is installed: `npm ls react react-dom`
-
-    -   Make sure `CollectionContext` is imported from **one consistent path**
-
-    -   Wrap consumers with `<CollectionProvider>...</CollectionProvider>`
-
-    -   Update React Router: `npm i react-router-dom@latest`
-
-    -   In `vite.config.js`: `resolve: { dedupe: ['react', 'react-dom'] }`
-
--   **CORS errors**
-
-    -   Try again (APIs sometimes rate limit).
-
-    -   Temporarily proxy via a Netlify Function.
-
--   **Met object 404**
-
-    -   Normal: search IDs occasionally 404. We use `Promise.allSettled` and filter failures.
-
-* * * * *
-
-Roadmap / Ideas
----------------
-
--   Auth + server persistence (Supabase)
-
--   More sources (Tate, British Museum via SPARQL/linked data, Europeana)
-
--   Advanced filters (period, medium, culture)
-
--   Image IIIF viewers and zoom
-
--   Shareable/public collections
-
-* * * * *
-
-License & Credits
------------------
-
--   Code: MIT (add a `LICENSE` file if needed).
-
--   Data & Images: Subject to the terms of the source museums:
-
-    -   The Met Collection API © The Metropolitan Museum of Art.
-
-    -   V&A API © Victoria and Albert Museum.
-
-* * * * *
-
-Acknowledgements
-----------------
-
-Thanks to the open museum APIs that make cultural browsing possible. If you use this publicly, please credit the data providers and respect their usage guidelines.
+This project is released under the **MIT License**.\
+You're free to use, modify, and distribute it with attribution.
