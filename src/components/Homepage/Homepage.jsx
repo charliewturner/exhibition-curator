@@ -2,6 +2,14 @@ import Header from "./Header";
 import Body from "./Body";
 import ArtworkModal from "./ArtworkModal";
 
+// helper: truncate to N words (keeps original string intact elsewhere)
+const MAX_WORDS = 8;
+function truncateWords(str = "", maxWords = MAX_WORDS) {
+  const words = String(str).trim().split(/\s+/);
+  if (words.length <= maxWords) return str;
+  return words.slice(0, maxWords).join(" ") + "…";
+}
+
 export default function Homepage({
   status = "loading",
   heroItems = [],
@@ -15,6 +23,7 @@ export default function Homepage({
     <div id="homepage-container">
       <Header onSearchSubmit={onSearchSubmit} />
       <Body status={status} heroItems={heroItems} onOpenItem={onOpenItem} />
+
       {/* Simple results readout (replace with your own list later) */}
       <section style={{ padding: 16, maxWidth: "1100px", margin: "0 auto" }}>
         {status === "loading" && <div>Searching…</div>}
@@ -46,8 +55,11 @@ export default function Homepage({
                     borderRadius: 8,
                   }}
                 />
-                <div style={{ fontWeight: 600, marginTop: 6, fontSize: 14 }}>
-                  {it.title}
+                <div
+                  style={{ fontWeight: 600, marginTop: 6, fontSize: 14 }}
+                  title={it.title} // hover shows full title
+                >
+                  {truncateWords(it.title, MAX_WORDS)}
                 </div>
                 <div style={{ color: "#6b7280", fontSize: 12 }}>
                   {it.maker}
@@ -62,6 +74,7 @@ export default function Homepage({
           </ul>
         )}
       </section>
+
       <ArtworkModal item={selectedItem} onClose={onCloseItem} />
     </div>
   );

@@ -24,9 +24,9 @@ async function fetchVamDetail(systemNumber, signal) {
     rec?._links?.self?.href || // fallback if present
     null;
 
-  console.log("V&A detail (raw):", d);
-  console.log("collection page:", d?.meta?._links.collection_page?.href);
-  console.log("dimensions raw:", d?.record?.dimensions);
+  // console.log("V&A detail (raw):", d);
+  // console.log("collection page:", d?.meta?._links.collection_page?.href);
+  // console.log("dimensions raw:", d?.record?.dimensions);
 
   return {
     dimensions: dims,
