@@ -6,6 +6,28 @@ import getAPI from "./components/getApi";
 const MET = "https://collectionapi.metmuseum.org/public/collection/v1";
 const VAM = "https://api.vam.ac.uk/v2";
 
+async function fetchVamDetail(systemNumber, signal) {
+  // Full record endpoint
+  const d = await getAPI(`${VAM}/museumobject/${systemNumber}`, { signal });
+  console.log("V&A detail (raw):", d);
+  const rec = d?.record || d;
+
+  const dims = Array.isArray(rec?.dimensions)
+    ? rec.dimensions
+        .map((x) => `${x.dimension} ${x.value}${x.unit ? ` ${x.unit}` : ""}`)
+        .join("; ")
+    : rec?.dimensions || "";
+
+  return {
+    culture: rec?.culture || "",
+    dimensions: dims,
+    department: rec?.museumLocation || "",
+    classification: rec?.objectType || "",
+    creditLine: rec?.creditLine || "",
+    objectURL: rec?._links?.self?.href || null,
+  };
+}
+
 // helper: batch
 function chunk(arr, n) {
   const out = [];
@@ -136,9 +158,20 @@ export default function App() {
 
   const [selectedItem, setSelectedItem] = useState(null);
 
-  function handleOpen(item) {
+  async function handleOpen(item) {
     console.log("Opened item:", item);
-    setSelectedItem(item);
+    setSelectedItem(item); // show modal immediately with what we have
+
+    if (item?.source === "vam") {
+      try {
+        const ctrl = new AbortController();
+        const extra = await fetchVamDetail(item.id, ctrl.signal);
+        // merge extra fields into the selected item
+        setSelectedItem((prev) => (prev ? { ...prev, ...extra } : prev));
+      } catch (e) {
+        console.warn("V&A detail fetch failed:", e);
+      }
+    }
   }
   function handleClose() {
     setSelectedItem(null);
