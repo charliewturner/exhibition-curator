@@ -1,5 +1,3 @@
-import ScrollDisplay from "./ScrollDisplay";
-import FocusInfo from "./FocusInfo";
 import HeroCarousel from "./HeroCarousel";
 
 export default function Body({ status, heroItems, onOpenItem }) {
