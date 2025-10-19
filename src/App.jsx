@@ -1,7 +1,10 @@
 import "./App.css";
 import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Homepage from "./components/Homepage/Homepage";
+import CollectionPage from "./components/collection/CollectionPage";
 import getAPI from "./components/getApi";
+import { CollectionProvider } from "./components/collection/CollectionContext";
 
 const MET = "https://collectionapi.metmuseum.org/public/collection/v1";
 const VAM = "https://api.vam.ac.uk/v2";
@@ -11,18 +14,14 @@ async function fetchVamDetail(systemNumber, signal) {
   const rec = d?.record || {};
   const meta = d?.meta || {};
 
-  // dimensions can be an array of { dimension, value, unit } or a string
   const dims = Array.isArray(rec.dimensions)
     ? rec.dimensions
         .map((x) => [x.dimension, x.value, x.unit].filter(Boolean).join(" "))
         .join("; ")
     : rec.dimensions || "";
 
-  // preferred public page URL
   const collectionHref =
-    meta?._links.collection_page?.href ||
-    rec?._links?.self?.href || // fallback if present
-    null;
+    meta?._links.collection_page?.href || rec?._links?.self?.href || null;
 
   // console.log("V&A detail (raw):", d);
   // console.log("collection page:", d?.meta?._links.collection_page?.href);
@@ -30,24 +29,22 @@ async function fetchVamDetail(systemNumber, signal) {
 
   return {
     dimensions: dims,
-    objectURL: collectionHref, // <- use this in your modal "View on source"
+    objectURL: collectionHref,
     culture: rec.culture || "",
     department: rec.museumLocation || "",
     classification: rec.objectType || "",
     creditLine: rec.creditLine || "",
-    // raw if you still want to inspect
+
     raw: d,
   };
 }
 
-// helper: batch
 function chunk(arr, n) {
   const out = [];
   for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
   return out;
 }
 
-// normalize to a common shape
 function mapMet(o) {
   if (!o) return null;
   const imageUrl = o.primaryImageSmall || o.primaryImage || null;
@@ -101,9 +98,7 @@ function mapVam(r) {
   };
 }
 
-// fetch a page of Met objects by keyword (ids -> objects)
 async function searchMetByKeyword(q, limit = 24, signal) {
-  // Met `search` needs a non-empty q; default to "art" if q is blank
   const query = (q && q.trim()) || "art";
   const search = await getAPI(
     `${MET}/search?hasImages=true&q=${encodeURIComponent(query)}`,
@@ -123,7 +118,6 @@ async function searchMetByKeyword(q, limit = 24, signal) {
   return results.filter(Boolean);
 }
 
-// fetch a page of V&A objects by keyword
 async function searchVamByKeyword(q, limit = 24, offset = 0, signal) {
   const params = new URLSearchParams({
     images_exist: "1",
@@ -138,12 +132,10 @@ async function searchVamByKeyword(q, limit = 24, offset = 0, signal) {
   return records.map(mapVam).filter(Boolean);
 }
 
-// simple client-side sort
 function sortItems(items, sort) {
   const byTitle = (a, b) =>
     a.title.localeCompare(b.title, undefined, { sensitivity: "base" });
   const toYear = (s) => {
-    // crude date parse: pull first number with 3–4 digits
     const m = (s || "").match(/\d{3,4}/);
     return m ? parseInt(m[0], 10) : Number.NaN;
   };
@@ -165,20 +157,20 @@ function sortItems(items, sort) {
 
 export default function App() {
   const [status, setStatus] = useState("loading");
-  const [heroItems, setHeroItems] = useState([]); // you already use this
-  const [results, setResults] = useState([]); // search results list
+  const [heroItems, setHeroItems] = useState([]);
+  const [results, setResults] = useState([]);
 
   const [selectedItem, setSelectedItem] = useState(null);
 
   async function handleOpen(item) {
     console.log("Opened item:", item);
-    setSelectedItem(item); // show modal immediately with what we have
+    setSelectedItem(item);
 
     if (item?.source === "vam") {
       try {
         const ctrl = new AbortController();
         const extra = await fetchVamDetail(item.id, ctrl.signal);
-        // merge extra fields into the selected item
+
         setSelectedItem((prev) => (prev ? { ...prev, ...extra } : prev));
       } catch (e) {
         console.warn("V&A detail fetch failed:", e);
@@ -189,12 +181,10 @@ export default function App() {
     setSelectedItem(null);
   }
 
-  // initial load for hero (reuse your previous combined fetch or keep as-is)
   useEffect(() => {
     const ctrl = new AbortController();
     (async () => {
       try {
-        // quick initial content: V&A 12 + Met 12 for hero
         const [vam12, met12] = await Promise.all([
           searchVamByKeyword("", 12, 0, ctrl.signal),
           searchMetByKeyword("", 12, ctrl.signal),
@@ -208,7 +198,6 @@ export default function App() {
     return () => ctrl.abort();
   }, []);
 
-  // called by Search on submit
   async function handleSearchSubmit({ q, source, sort }) {
     const ctrl = new AbortController();
     setStatus("loading");
@@ -234,14 +223,35 @@ export default function App() {
   }
 
   return (
-    <Homepage
-      status={status}
-      heroItems={heroItems}
-      results={results}
-      onSearchSubmit={handleSearchSubmit}
-      onOpenItem={handleOpen}
-      selectedItem={selectedItem}
-      onCloseItem={handleClose}
-    />
+    <CollectionProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Homepage
+                status={status}
+                heroItems={heroItems}
+                results={results}
+                onSearchSubmit={handleSearchSubmit}
+                onOpenItem={handleOpen}
+                selectedItem={selectedItem}
+                onCloseItem={handleClose}
+              />
+            }
+          />
+          <Route
+            path="/collection"
+            element={
+              <CollectionPage
+                onOpenItem={handleOpen}
+                selectedItem={selectedItem}
+                onCloseItem={handleClose}
+              />
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </CollectionProvider>
   );
 }

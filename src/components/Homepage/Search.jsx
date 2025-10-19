@@ -1,25 +1,35 @@
-import Filters from "./Filters";
+import { useState } from "react";
 import SearchInput from "./SearchInput";
+import Filters from "./Filters";
 import Sort from "./Sort";
 import Submit from "./Submit";
-import { useState } from "react";
 
-export default function Search({ onSubmit }) {
+export default function Search({ onSearchSubmit, onSubmit }) {
   const [q, setQ] = useState("");
   const [source, setSource] = useState("both"); // 'met' | 'vam' | 'both'
-  const [sort, setSort] = useState("title_asc"); // 'title_asc' | 'title_desc' | 'date_asc' | 'date_desc'
+  const [sort, setSort] = useState("title_asc");
+
+  // Accept either prop name
+  const submitHandler = onSearchSubmit || onSubmit;
 
   function handleSubmit(e) {
-    e.preventDefault();
-    onSubmit?.({ q, source, sort });
+    e.preventDefault(); // 🔴 prevents a full page reload
+    if (typeof submitHandler === "function") {
+      submitHandler({ q, source, sort });
+    } else {
+      console.warn("No onSearchSubmit handler provided");
+    }
   }
 
   return (
-    <form id="search-input" onSubmit={handleSubmit} style={{ gap: 8 }}>
+    <form
+      onSubmit={handleSubmit}
+      style={{ display: "flex", gap: 8, alignItems: "center", width: "100%" }}
+    >
       <SearchInput value={q} onChange={setQ} />
-      <Filters source={source} onChange={setSource} />
+      <Filters value={source} onChange={setSource} />
       <Sort value={sort} onChange={setSort} />
-      <Submit />
+      <Submit /> {/* should render <button type="submit">Search</button> */}
     </form>
   );
 }

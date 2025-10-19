@@ -1,35 +1,37 @@
-import Header from "./Header";
-import Body from "./Body";
-import ArtworkModal from "./ArtworkModal";
-import { useCollection } from "../collection/CollectionContext";
+import Header from "../Homepage/Header";
+import ArtworkModal from "../Homepage/ArtworkModal";
+import { useCollection } from "./CollectionContext";
 
-const MAX_WORDS = 8;
+const MAX_WORDS = 12;
 function truncateWords(str = "", maxWords = MAX_WORDS) {
   const words = String(str).trim().split(/\s+/);
   if (words.length <= maxWords) return str;
   return words.slice(0, maxWords).join(" ") + "…";
 }
 
-export default function Homepage({
-  status = "loading",
-  heroItems = [],
-  results = [],
-  onSearchSubmit,
+export default function CollectionPage({
   onOpenItem,
   selectedItem,
   onCloseItem,
 }) {
-  const { isSaved, toggle } = useCollection();
+  const { items, isSaved, toggle } = useCollection();
 
   return (
     <div id="homepage-container">
-      <Header onSearchSubmit={onSearchSubmit} />
-      <Body status={status} heroItems={heroItems} onOpenItem={onOpenItem} />
+      {/* keep header so user can search from here too */}
+      <Header onSearchSubmit={() => {}} />
 
       <section style={{ padding: 16, maxWidth: "1100px", margin: "0 auto" }}>
-        {status === "loading" && <div>Searching…</div>}
-        {status === "error" && <div>Something went wrong.</div>}
-        {status === "success" && results?.length > 0 && (
+        <h2 style={{ textAlign: "left", margin: "8px 0 12px" }}>
+          My Collection
+        </h2>
+
+        {items.length === 0 ? (
+          <p style={{ color: "#6b7280" }}>
+            Your collection is empty. Save works from search results or the
+            carousel.
+          </p>
+        ) : (
           <ul
             style={{
               listStyle: "none",
@@ -40,7 +42,7 @@ export default function Homepage({
               gap: "12px",
             }}
           >
-            {results.map((it) => {
+            {items.map((it) => {
               const saved = isSaved(it);
               return (
                 <li
@@ -52,7 +54,7 @@ export default function Homepage({
                     src={it.imageUrl}
                     alt={it.title}
                     style={{
-                      width: "90vw",
+                      width: "100%",
                       height: 140,
                       objectFit: "cover",
                       borderRadius: 8,
@@ -72,7 +74,6 @@ export default function Homepage({
                   <div style={{ color: "#94a3b8", fontSize: 11, marginTop: 2 }}>
                     {it.source.toUpperCase()}
                   </div>
-
                   <div style={{ marginTop: 8 }}>
                     <button
                       onClick={(e) => {
