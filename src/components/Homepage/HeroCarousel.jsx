@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 
-export default function HeroCarousel({ items = [], autoplayMs = 4000 }) {
+export default function HeroCarousel({ items = [], autoplayMs = 7000 }) {
   const safeItems = useMemo(() => items.filter((i) => i?.imageUrl), [items]);
   const [idx, setIdx] = useState(0);
 
@@ -47,14 +47,34 @@ export default function HeroCarousel({ items = [], autoplayMs = 4000 }) {
         </button>
 
         {prev && (
+          //   <figure className="hero-slide hero-slide--side" aria-hidden="true">
+          //     <img src={prev.imageUrl} alt={prev.title || "Previous artwork"} />
+          //   </figure>
+
           <figure className="hero-slide hero-slide--side" aria-hidden="true">
-            <img src={prev.imageUrl} alt={prev.title || "Previous artwork"} />
+            <div className="hero-media">
+              <img
+                className="hero-img"
+                src={prev.imageUrl}
+                alt={prev.title || "Previous artwork"}
+              />
+            </div>
           </figure>
         )}
 
         {current && (
+          //   <figure className="hero-slide hero-slide--center">
+          //     <img src={current.imageUrl} alt={current.title || "Artwork"} />
+
           <figure className="hero-slide hero-slide--center">
-            <img src={current.imageUrl} alt={current.title || "Artwork"} />
+            <div className="hero-media">
+              <img
+                className="hero-img"
+                src={current.imageUrl}
+                alt={current.title || "Artwork"}
+              />
+            </div>
+
             <figcaption className="hero-info">
               <div className="hero-title">{current.title || "(untitled)"}</div>
               {(current.maker || current.date) && (
@@ -69,8 +89,18 @@ export default function HeroCarousel({ items = [], autoplayMs = 4000 }) {
         )}
 
         {next && (
+          //   <figure className="hero-slide hero-slide--side" aria-hidden="true">
+          //     <img src={next.imageUrl} alt={next.title || "Next artwork"} />
+          //   </figure>
+
           <figure className="hero-slide hero-slide--side" aria-hidden="true">
-            <img src={next.imageUrl} alt={next.title || "Next artwork"} />
+            <div className="hero-media">
+              <img
+                className="hero-img"
+                src={next.imageUrl}
+                alt={next.title || "Next artwork"}
+              />
+            </div>
           </figure>
         )}
 
