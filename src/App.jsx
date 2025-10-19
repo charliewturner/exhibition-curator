@@ -6,145 +6,164 @@ import getAPI from "./components/getApi";
 const MET = "https://collectionapi.metmuseum.org/public/collection/v1";
 const VAM = "https://api.vam.ac.uk/v2";
 
-// tiny helper for batching fetches
+// helper: batch
 function chunk(arr, n) {
   const out = [];
   for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
   return out;
 }
 
+// normalize to a common shape
+function mapMet(o) {
+  if (!o) return null;
+  const imageUrl = o.primaryImageSmall || o.primaryImage || null;
+  if (!imageUrl) return null;
+  return {
+    id: String(o.objectID),
+    title: o.title || "(untitled)",
+    maker: o.artistDisplayName || "",
+    date: o.objectDate || "",
+    imageUrl,
+    source: "met",
+  };
+}
+function mapVam(r) {
+  const iiifBase =
+    r._images?._iiif_image_base_url ||
+    (r._primaryImageId
+      ? `https://framemark.vam.ac.uk/collections/${r._primaryImageId}`
+      : null);
+  const imageUrl = iiifBase
+    ? `${iiifBase}/full/843,/0/default.jpg`
+    : r._images?._primary_thumbnail || null;
+  if (!imageUrl) return null;
+  return {
+    id: r.systemNumber,
+    title: r._primaryTitle || r.objectType || "(untitled)",
+    maker: r._primaryMaker__name || "",
+    date: r._primaryDate || "",
+    imageUrl,
+    source: "vam",
+  };
+}
+
+// fetch a page of Met objects by keyword (ids -> objects)
+async function searchMetByKeyword(q, limit = 24, signal) {
+  // Met `search` needs a non-empty q; default to "art" if q is blank
+  const query = (q && q.trim()) || "art";
+  const search = await getAPI(
+    `${MET}/search?hasImages=true&q=${encodeURIComponent(query)}`,
+    { signal }
+  );
+  const ids = Array.isArray(search.objectIDs)
+    ? search.objectIDs.slice(0, limit)
+    : [];
+  const results = [];
+  for (const part of chunk(ids, 8)) {
+    const got = await Promise.allSettled(
+      part.map((id) => getAPI(`${MET}/objects/${id}`, { signal }))
+    );
+    for (const g of got)
+      if (g.status === "fulfilled") results.push(mapMet(g.value));
+  }
+  return results.filter(Boolean);
+}
+
+// fetch a page of V&A objects by keyword
+async function searchVamByKeyword(q, limit = 24, offset = 0, signal) {
+  const params = new URLSearchParams({
+    images_exist: "1",
+    page_size: String(limit),
+    page_offset: String(offset),
+  });
+  if (q && q.trim()) params.set("q", q.trim());
+  const list = await getAPI(`${VAM}/objects/search?${params.toString()}`, {
+    signal,
+  });
+  const records = Array.isArray(list.records) ? list.records : [];
+  return records.map(mapVam).filter(Boolean);
+}
+
+// simple client-side sort
+function sortItems(items, sort) {
+  const byTitle = (a, b) =>
+    a.title.localeCompare(b.title, undefined, { sensitivity: "base" });
+  const toYear = (s) => {
+    // crude date parse: pull first number with 3–4 digits
+    const m = (s || "").match(/\d{3,4}/);
+    return m ? parseInt(m[0], 10) : Number.NaN;
+  };
+  const byDate = (a, b) => (toYear(a.date) || 0) - (toYear(b.date) || 0);
+
+  const arr = [...items];
+  switch (sort) {
+    case "title_desc":
+      return arr.sort((a, b) => -byTitle(a, b));
+    case "date_asc":
+      return arr.sort(byDate);
+    case "date_desc":
+      return arr.sort((a, b) => -byDate(a, b));
+    case "title_asc":
+    default:
+      return arr.sort(byTitle);
+  }
+}
+
 export default function App() {
   const [status, setStatus] = useState("loading");
+  const [heroItems, setHeroItems] = useState([]); // you already use this
+  const [results, setResults] = useState([]); // search results list
 
-  const [metItems, setMetItems] = useState([]);
-  const [vamItems, setVamItems] = useState([]);
-  const [heroItems, setHeroItems] = useState([]);
-
+  // initial load for hero (reuse your previous combined fetch or keep as-is)
   useEffect(() => {
     const ctrl = new AbortController();
-
     (async () => {
-      setStatus("loading");
       try {
-        // A) MET — departments -> object IDs -> 24 objects with images
-
-        const { departments } = await getAPI(`${MET}/departments`, {
-          signal: ctrl.signal,
-        });
-
-        const wantedNames = [
-          "Greek and Roman Art",
-          "Ancient Near Eastern Art",
-          "Egyptian Art",
-          "Medieval Art",
-          // add  "Islamic Art", "Asian Art", etc.
-        ];
-        const wantedIds = departments
-          .filter((d) => wantedNames.includes(d.displayName))
-          .map((d) => d.departmentId);
-
-        const idsResp = await getAPI(
-          `${MET}/objects${
-            wantedIds.length ? `?departmentIds=${wantedIds.join("|")}` : ""
-          }`,
-          { signal: ctrl.signal }
-        );
-
-        const ids = Array.isArray(idsResp.objectIDs) ? idsResp.objectIDs : [];
-        // console.log(
-        //   "MET: total candidate IDs:",
-        //   ids.length,
-        //   "Departments:",
-        //   wantedIds
-        // );
-
-        const pick = ids.slice(0, 24);
-        const metResults = [];
-        for (const batch of chunk(pick, 8)) {
-          const got = await Promise.allSettled(
-            batch.map((id) =>
-              getAPI(`${MET}/objects/${id}`, { signal: ctrl.signal })
-            )
-          );
-          for (const g of got)
-            if (g.status === "fulfilled") metResults.push(g.value);
-        }
-
-        // const metWithImages = metResults.filter(
-        //   (o) => o?.primaryImageSmall || o?.primaryImage
-        // );
-        // console.log("MET objects (24, with images):", metWithImages);
-        // setMetItems(metWithImages);
-
-        const metMapped = metResults
-          .filter((o) => o?.primaryImageSmall || o?.primaryImage)
-          .map((o) => ({
-            id: String(o.objectID),
-            title: o.title || "(untitled)",
-            maker: o.artistDisplayName || "",
-            date: o.objectDate || "",
-            imageUrl: o.primaryImageSmall || o.primaryImage,
-          }));
-        // console.log("MET items (24, mapped):", metMapped);
-        setMetItems(metMapped);
-
-        // B) V&A — search 24 records with images
-
-        const vamParams = new URLSearchParams({
-          images_exist: "1", // only items with images
-          page_size: "24",
-          page_offset: "0",
-          // q: "bronze",        // optional: add a keyword
-        });
-
-        const vamList = await getAPI(
-          `${VAM}/objects/search?${vamParams.toString()}`,
-          {
-            signal: ctrl.signal,
-          }
-        );
-
-        const records = Array.isArray(vamList.records) ? vamList.records : [];
-        const vamMapped = records
-          .map((r) => {
-            const iiifBase =
-              r._images?._iiif_image_base_url ||
-              (r._primaryImageId
-                ? `https://framemark.vam.ac.uk/collections/${r._primaryImageId}`
-                : null);
-
-            const imageUrl = iiifBase
-              ? `${iiifBase}/full/843,/0/default.jpg`
-              : r._images?._primary_thumbnail || null;
-
-            return {
-              id: r.systemNumber, // e.g., "O828146"
-              title: r._primaryTitle || r.objectType || "(untitled)",
-              maker: r._primaryMaker__name || "",
-              date: r._primaryDate || "",
-              imageUrl,
-            };
-          })
-          .filter((x) => x.imageUrl);
-
-        // console.log("V&A items (24 with images):", vamMapped);
-        setVamItems(vamMapped);
-
-        // Combine a few from both sources for the hero
-        const combined = [...vamMapped.slice(0, 12), ...metMapped.slice(0, 12)];
-        setHeroItems(combined);
-
+        // quick initial content: V&A 12 + Met 12 for hero
+        const [vam12, met12] = await Promise.all([
+          searchVamByKeyword("", 12, 0, ctrl.signal),
+          searchMetByKeyword("", 12, ctrl.signal),
+        ]);
+        setHeroItems([...vam12, ...met12]);
         setStatus("success");
-      } catch (e) {
-        if (e?.name !== "AbortError") {
-          console.error("Fetch failed:", e);
-          setStatus("error");
-        }
+      } catch {
+        setStatus("error");
       }
     })();
-
     return () => ctrl.abort();
   }, []);
 
-  return <Homepage status={status} heroItems={heroItems} />;
+  // called by Search on submit
+  async function handleSearchSubmit({ q, source, sort }) {
+    const ctrl = new AbortController();
+    setStatus("loading");
+    try {
+      const wantMet = source === "met" || source === "both";
+      const wantVam = source === "vam" || source === "both";
+
+      const [met, vam] = await Promise.all([
+        wantMet ? searchMetByKeyword(q, 24, ctrl.signal) : Promise.resolve([]),
+        wantVam
+          ? searchVamByKeyword(q, 24, 0, ctrl.signal)
+          : Promise.resolve([]),
+      ]);
+
+      const combined = sortItems([...met, ...vam], sort || "title_asc");
+      setResults(combined);
+      setStatus("success");
+    } catch (e) {
+      console.error(e);
+      setResults([]);
+      setStatus("error");
+    }
+  }
+
+  return (
+    <Homepage
+      status={status}
+      heroItems={heroItems}
+      results={results}
+      onSearchSubmit={handleSearchSubmit}
+    />
+  );
 }

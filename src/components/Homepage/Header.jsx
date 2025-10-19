@@ -1,15 +1,11 @@
 import Search from "./Search";
 import ProfileDropdown from "./ProfileDropdown";
 
-function Header() {
+export default function Header({ onSearchSubmit }) {
   return (
-    <>
-      <div id="header-container">
-        <Search></Search>
-        <ProfileDropdown></ProfileDropdown>
-      </div>
-    </>
+    <header id="header-container">
+      {/* put your logo / profile etc here too */}
+      <Search onSubmit={onSearchSubmit} />
+    </header>
   );
 }
-
-export default Header;
