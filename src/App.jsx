@@ -18,6 +18,7 @@ export default function App() {
 
   const [metItems, setMetItems] = useState([]);
   const [vamItems, setVamItems] = useState([]);
+  const [heroItems, setHeroItems] = useState([]);
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -50,12 +51,12 @@ export default function App() {
         );
 
         const ids = Array.isArray(idsResp.objectIDs) ? idsResp.objectIDs : [];
-        console.log(
-          "MET: total candidate IDs:",
-          ids.length,
-          "Departments:",
-          wantedIds
-        );
+        // console.log(
+        //   "MET: total candidate IDs:",
+        //   ids.length,
+        //   "Departments:",
+        //   wantedIds
+        // );
 
         const pick = ids.slice(0, 24);
         const metResults = [];
@@ -69,11 +70,23 @@ export default function App() {
             if (g.status === "fulfilled") metResults.push(g.value);
         }
 
-        const metWithImages = metResults.filter(
-          (o) => o?.primaryImageSmall || o?.primaryImage
-        );
-        console.log("MET objects (24, with images):", metWithImages);
-        setMetItems(metWithImages);
+        // const metWithImages = metResults.filter(
+        //   (o) => o?.primaryImageSmall || o?.primaryImage
+        // );
+        // console.log("MET objects (24, with images):", metWithImages);
+        // setMetItems(metWithImages);
+
+        const metMapped = metResults
+          .filter((o) => o?.primaryImageSmall || o?.primaryImage)
+          .map((o) => ({
+            id: String(o.objectID),
+            title: o.title || "(untitled)",
+            maker: o.artistDisplayName || "",
+            date: o.objectDate || "",
+            imageUrl: o.primaryImageSmall || o.primaryImage,
+          }));
+        // console.log("MET items (24, mapped):", metMapped);
+        setMetItems(metMapped);
 
         // B) V&A — search 24 records with images
 
@@ -114,8 +127,12 @@ export default function App() {
           })
           .filter((x) => x.imageUrl);
 
-        console.log("V&A items (24 with images):", vamMapped);
+        // console.log("V&A items (24 with images):", vamMapped);
         setVamItems(vamMapped);
+
+        // Combine a few from both sources for the hero
+        const combined = [...vamMapped.slice(0, 12), ...metMapped.slice(0, 12)];
+        setHeroItems(combined);
 
         setStatus("success");
       } catch (e) {
@@ -129,5 +146,5 @@ export default function App() {
     return () => ctrl.abort();
   }, []);
 
-  return <Homepage status={status} />;
+  return <Homepage status={status} heroItems={heroItems} />;
 }
