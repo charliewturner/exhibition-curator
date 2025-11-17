@@ -21,6 +21,31 @@ export default function CollectionPage({
       {/* keep header so user can search from here too */}
       <Header onSearchSubmit={() => {}} />
 
+      <section
+        style={{
+          padding: "0 16px",
+          maxWidth: "1100px",
+          margin: "0 auto",
+        }}
+      >
+        <button
+          onClick={() => (window.location.href = "/")}
+          style={{
+            margin: "16px 0",
+            padding: "8px 14px",
+            borderRadius: 8,
+            border: "1px solid #e5e7eb",
+            background: "#fff",
+            cursor: "pointer",
+            fontWeight: 600,
+            fontSize: 14,
+          }}
+          aria-label="Return to homepage"
+        >
+          Return to Homepage
+        </button>
+      </section>
+
       <section style={{ padding: 16, maxWidth: "1100px", margin: "0 auto" }}>
         <h2 style={{ textAlign: "left", margin: "8px 0 12px" }}>
           My Collection
