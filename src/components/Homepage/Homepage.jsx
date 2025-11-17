@@ -24,8 +24,8 @@ export default function Homepage({
   return (
     <div id="homepage-container">
       <Header onSearchSubmit={onSearchSubmit} />
-      <Body status={status} heroItems={heroItems} onOpenItem={onOpenItem} />
-
+      {/* <Body status={status} heroItems={heroItems} onOpenItem={onOpenItem} /> */}
+      <Body heroItems={heroItems} onOpenItem={onOpenItem} />
       <section
         style={{
           padding: 16,
