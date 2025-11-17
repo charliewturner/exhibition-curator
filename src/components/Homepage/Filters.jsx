@@ -12,7 +12,7 @@ export default function Filters({ source, onChange }) {
           border: "1px solid #e5e7eb",
         }}
       >
-        <option value="both">Both</option>
+        <option value="both">All</option>
         <option value="met">The Met</option>
         <option value="vam">V&A</option>
       </select>
