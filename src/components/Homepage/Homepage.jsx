@@ -18,13 +18,14 @@ export default function Homepage({
   onOpenItem,
   selectedItem,
   onCloseItem,
+  hasSearched,
 }) {
   const { isSaved, toggle } = useCollection();
 
   return (
     <div id="homepage-container">
       <Header onSearchSubmit={onSearchSubmit} />
-      {/* <Body status={status} heroItems={heroItems} onOpenItem={onOpenItem} /> */}
+
       <Body heroItems={heroItems} onOpenItem={onOpenItem} />
       <section
         style={{
@@ -36,6 +37,11 @@ export default function Homepage({
       >
         {status === "loading" && <div>Searching…</div>}
         {status === "error" && <div>Something went wrong.</div>}
+        {hasSearched && status === "success" && results?.length === 0 && (
+          <div style={{ color: "#6b7280", marginTop: 12 }}>
+            No artworks found. Please try a different search term.
+          </div>
+        )}
         {status === "success" && results?.length > 0 && (
           <ul
             style={{

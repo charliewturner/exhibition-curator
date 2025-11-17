@@ -159,6 +159,7 @@ export default function App() {
   const [status, setStatus] = useState("loading");
   const [heroItems, setHeroItems] = useState([]);
   const [results, setResults] = useState([]);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -200,6 +201,7 @@ export default function App() {
   async function handleSearchSubmit({ q, source, sort }) {
     const ctrl = new AbortController();
     setStatus("loading");
+    setHasSearched(true);
     try {
       const wantMet = source === "met" || source === "both";
       const wantVam = source === "vam" || source === "both";
@@ -236,6 +238,7 @@ export default function App() {
                 onOpenItem={handleOpen}
                 selectedItem={selectedItem}
                 onCloseItem={handleClose}
+                hasSearched={hasSearched}
               />
             }
           />
